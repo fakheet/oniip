@@ -4,11 +4,15 @@ import task.logic.dao.AppDao;
 import task.logic.daoimp.AppDaoImp;
 import task.logic.model.UserTableModel;
 import task.logic.model.user.User;
+import task.logic.model.user.UserAccessLevel;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MainScreen extends JFrame implements NewUserReceiver {
     private final JMenuBar appMenuBar = new JMenuBar();
@@ -27,10 +31,11 @@ public class MainScreen extends JFrame implements NewUserReceiver {
     private JButton editButton;
     private JButton deleteButton;
     private JTextField idTextField;
-    private JComboBox clearanceLevelDropdown;
+    private JComboBox accessLevelDropdown;
     private JTextField loginTextField;
     private JTable usersTable;
     private JLabel totalRecordsLabel;
+    private JButton resetFiltersButton;
 
 
     public MainScreen(String title) throws HeadlessException {
@@ -107,6 +112,40 @@ public class MainScreen extends JFrame implements NewUserReceiver {
                     }
                 }
         );
+
+        idTextField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent documentEvent) {
+                updateFilters();
+            }
+            @Override
+            public void removeUpdate(DocumentEvent documentEvent) {
+                updateFilters();
+            }
+            @Override
+            public void changedUpdate(DocumentEvent documentEvent) {
+                updateFilters();
+            }
+        });
+
+        loginTextField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent documentEvent) {
+                updateFilters();
+            }
+            @Override
+            public void removeUpdate(DocumentEvent documentEvent) {
+                updateFilters();
+            }
+            @Override
+            public void changedUpdate(DocumentEvent documentEvent) {
+                updateFilters();
+            }
+        });
+
+        accessLevelDropdown.addActionListener(actionEvent -> updateFilters());
+
+        resetFiltersButton.addActionListener(actionEvent -> tableRowSorter.setRowFilter(null));
     }
 
     private void reloadTableData() {
@@ -115,6 +154,21 @@ public class MainScreen extends JFrame implements NewUserReceiver {
         tableRowSorter = new TableRowSorter<>(userTableModel);
         usersTable.setRowSorter(tableRowSorter);
         usersTable.repaint();
+    }
+
+    private void updateFilters() {
+        RowFilter<UserTableModel, Object> rf = null;
+        try {
+            var filters = new ArrayList<RowFilter<UserTableModel, Object>>();
+            filters.add(RowFilter.regexFilter(idTextField.getText(), 0));
+            filters.add(RowFilter.regexFilter(loginTextField.getText(), 1));
+            filters.add(RowFilter.regexFilter((String) Objects.requireNonNull(accessLevelDropdown.getSelectedItem()),3));
+
+            rf = RowFilter.andFilter(filters);
+        } catch (java.util.regex.PatternSyntaxException e) {
+            return;
+        }
+        tableRowSorter.setRowFilter(rf);
     }
 
     private void exitApplication() {

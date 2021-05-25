@@ -65,7 +65,7 @@ public class EditScreen extends JFrame {
         idTextField.setText(String.valueOf(userBeingEdited.getId()));
         loginTextField.setText(userBeingEdited.getLogin());
         passwordTextField.setText(userBeingEdited.getPassword());
-        accessLevelDropdown.setSelectedItem(UserAccessLevel.valueToString(userBeingEdited.getAccessLevel()));
+        accessLevelDropdown.setSelectedItem(UserAccessLevel.longToString(userBeingEdited.getAccessLevel()));
     }
 
     public void attachActionListeners() {

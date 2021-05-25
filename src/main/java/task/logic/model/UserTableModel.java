@@ -51,7 +51,7 @@ public class UserTableModel extends AbstractTableModel {
 
     public Object getValueAt(int row, int col) {
         if (col == 3) {
-            return UserAccessLevel.valueToString(users.get(row).getAccessLevel());
+            return UserAccessLevel.longToString(users.get(row).getAccessLevel());
         }
         return users.get(row).getFieldAtIndex(col);
     }

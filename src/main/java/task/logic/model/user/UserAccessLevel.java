@@ -15,7 +15,7 @@ public enum UserAccessLevel {
         return accessLevelValue;
     }
 
-    public static String valueToString(long accessLevel) {
+    public static String longToString(long accessLevel) {
         switch ((int) accessLevel) {
             case 1:
                 return "Admin";
@@ -25,6 +25,17 @@ public enum UserAccessLevel {
                 return "User";
         }
         return "";
+    }
+
+    public static long stringToLong(String accessLevel) {
+        switch (accessLevel) {
+            case "Admin":
+                return 1;
+            case "Tester":
+                return 2;
+            default:
+                return 3;
+        }
     }
 
     public static UserAccessLevel createFromString(String string) {
